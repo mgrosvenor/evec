@@ -136,7 +136,7 @@ void* evini(size_t slt_size, size_t count)
 #define evinit(type) evini(sizeof(type), EV_INIT_COUNT)
 
 /**
- * Easy allocate a new vector, with slot sizes as given
+ * Easy allocate a new vector with slot sizes as given
  * slt_size:    The size of each slot in the vector typically the size of
  *              the type that is being stored.
  * return:      A pointer to the memory region, or NULL.
