@@ -12,7 +12,7 @@ release: test
 debug: CFLAGS += -pedantic -Werror -Wno-language-extension-token -std=gnu11
 debug: test
 
-test: test.c ev.h
+test: test.c evec.h
 	$(CC) -o $@ test.c $(CFLAGS) $(LIBS)
 
 .PHONY: clean
