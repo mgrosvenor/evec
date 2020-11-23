@@ -10,7 +10,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "vec.h"
+
+#include "ev.h"
 
 void hexdump(const void *data, int size)
 {
@@ -66,7 +67,7 @@ void hexdump(const void *data, int size)
 
 void printi(uint64_t* a)
 {
-    for(int i =0; i < rsv_cnt(a); i++){
+    for(int i =0; i < evcnt(a); i++){
         printf("%02llu ", a[i]);
     }
 
@@ -75,8 +76,8 @@ void printi(uint64_t* a)
 
 void prints(void* a)
 {
-    for(int i =0; i < rsv_cnt(a); i++){
-        printf("%s ", rsv_idx(a,i));
+    for(int i =0; i < evcnt(a); i++){
+        printf("%s ", evidx(a,i));
     }
 
     printf("\n");
@@ -101,25 +102,25 @@ int main(void)
 {
 
     uint64_t* a = NULL;
-    void* b = rsv_initl(128);
+    void* b = evinisz(128);
 
     for(uint64_t i = 0;i < 32;i++){
-        rsv_psh(a, i);
+        evpsh(a, i);
         printi(a);
     }
 
 //    for(int i = 0;i < 32;i++){
-//        rsv_pop(a);
+//        evpop(a);
 //        printi(a);
 //    }
 //
 //    for(int i = 0;i < 32;i++){
-//        rsv_psh(a, i);
+//        evpsh(a, i);
 //        printi(a);
 //    }
 //
 //    for(int i = 0;i < 32;i++){
-//        rsv_del(a, 0);
+//        evdel(a, 0);
 //        printi(a);
 //    }
 //
@@ -127,21 +128,21 @@ int main(void)
     char val[3] = "AA";
     for(int i = 0;i < 32;i++){
         //val[0] += i;
-        rsv_push(b, val, sizeof(val) );
+        evpush(b, val, sizeof(val) );
         prints(b);
     }
 
 //
 //    for(int i = 0;i < 32;i++){
-//        rsv_del(b, 0);
+//        evdel(b, 0);
 //        prints(b);
 //    }
 
 
-    rsv_qsort(a,compare_uint64);
+    evsort(a,compare_uint64);
     printi(a);
 
-    rsv_qsort(b,compare_str);
+    evsort(b,compare_str);
     prints(b);
 
 
