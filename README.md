@@ -7,8 +7,8 @@ Some (optional) macro magic makes it even easier to use.
 
 ## Quick Start
 
-Getting started with easy Vector is ... easy. 
-The follwoing demo allocates a new vector and pushes the value of "1" into it.
+Getting started with Easy Vector is ... easy. 
+The following demo allocates a new vector and pushes the value of "1" into it.
 
 ~~~C
 int* a = NULL;
