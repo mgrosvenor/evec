@@ -26,7 +26,8 @@
 #include <libgen.h>
 #include <unistd.h>
 
-#define EV_HARD_EXIT       1 //Fail to exit().
+
+#define EV_HARD_EXIT       1 //Fail to exit(0xDEAD).
 #define EV_INIT_COUNT      8 //Start with 8 objects
 #define EV_GROWTH_FACTOR   2 //Grow by a factor of x when space runs out
 
@@ -34,14 +35,14 @@
 typedef long align;
 #define EV_HDR_BYTES (( (sizeof(evhd_t) + sizeof(align) - 1) / sizeof(align)) * sizeof(align))
 #define EV_HDR(v) ((evhd_t*)( ((char*)v) - EV_HDR_BYTES ))
-
+#define VER 1.0
 
 /*
  * Magic values are included so that it's easy to spot the memory segment in
  * a hexdump, and to protect from any violations that might happen by accident
  */
-#define EV_MAGIC1 "EV MAGIC"
-#define EV_MAGIC2 "MAGIC EV"
+#define EV_MAGIC1 "EV_MAGIC"
+#define EV_MAGIC2 "MAGIC_EV"
 
 
 typedef struct {
@@ -94,7 +95,6 @@ static inline void _evmsg(evdbg_e mode, int ln, char* fn, const char* fu, const 
     va_end(args);
 }
 
-
 /**
  * Allocate a new vector and initialize it.
  * slt_size:    The size of each slot in the vector typically the size of
@@ -127,6 +127,7 @@ void* evini(size_t slt_size, size_t count)
     return vec_start;
 }
 
+
 /**
  * Easy allocate a new vector, based on type information.
  * type:        A fully specified C type.
@@ -134,6 +135,7 @@ void* evini(size_t slt_size, size_t count)
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
 #define evinit(type) evini(sizeof(type), EV_INIT_COUNT)
+
 
 /**
  * Easy allocate a new vector with slot sizes as given
@@ -153,9 +155,9 @@ void* _evgrow(void* vec)
     }
 
     evhd_t* hdr = EV_HDR(vec);
-    const size_t storage_bytes  = hdr->slt_size * hdr->slt_count;
-    const size_t new_storage_bytes  = hdr->slt_size * hdr->slt_count * EV_GROWTH_FACTOR;
-    const size_t full_bytes = EV_HDR_BYTES + new_storage_bytes;
+    const size_t storage_bytes      = hdr->slt_size * hdr->slt_count;
+    const size_t new_storage_bytes  = storage_bytes * EV_GROWTH_FACTOR;
+    const size_t full_bytes         = EV_HDR_BYTES + new_storage_bytes;
 
     hdr = realloc(hdr, full_bytes);
     if (!hdr){
@@ -171,6 +173,7 @@ void* _evgrow(void* vec)
 
     return vec_start;
 }
+
 
 /**
  * Easy push a new value onto the tail of a vector. If the vector is NULL,
@@ -250,6 +253,77 @@ void* evpush(void* vec, void* obj, size_t obj_size)
     return result;
 }
 
+
+/**
+ * Get the number of items in the vector.
+ * vec:         Pointer to the vector
+ * return:      The number of objects in the vector.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+size_t evcnt(void* vec)
+{
+    if(!vec){
+        EV_FAIL("Cannot count a NULL vector\n");
+        return -1;
+    }
+
+    evhd_t *hdr =  EV_HDR(vec);
+    return hdr->obj_count;
+}
+
+/**
+ * Return a the pointer to the slot at a given index.
+ * vec:         Pointer to the vector
+ * idx:         The index value. Cannot be <0 or greater than the object count
+ * return:      Pointer to the value.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+#ifndef EV_IDX
+void* evidx(void* vec, size_t idx)
+{
+    if(!vec){
+        EV_FAIL("Cannot get index of a NULL vector\n");
+        return NULL;
+    }
+
+    evhd_t *hdr =  EV_HDR(vec);
+
+    if(idx < 0){
+        EV_FAIL("Index cannot be <0 (idx=%" PRId64 ")\n", idx);
+    }
+
+    if(idx > hdr->obj_count - 1){
+        EV_FAIL("Index cannot be greater than number of objects (idx=%" PRId64 " > %" PRId64 ")\n" ,
+                idx,
+                hdr->obj_count -1);
+    }
+
+    return (char*)vec + hdr->slt_size * idx;
+}
+#endif
+
+
+/**
+ * Free the memory used to hold the vector and its accounting.
+ * vec:         Pointer to the vector
+ * return:      NULL. Use vec = evfree(vec) to ensure there are no dangling
+ *              pointers.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evfree(void* vec)
+{
+    if(!vec){
+        EV_FAIL("Cannot free empty vector!\n");
+        return NULL;
+    }
+
+    if(vec){
+        evhd_t *hdr =  EV_HDR(vec);
+        free(hdr);
+    }
+
+    return NULL;
+}
 
 
 
@@ -336,26 +410,7 @@ void evdel(void *vec, size_t idx)
 #endif
 
 
-
-/**
- * Get the number of items in the vector.
- * vec:         Pointer to the vector
- * return:      The number of objects in the vector.
- * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
- */
-size_t evcnt(void* vec)
-{
-    if(!vec){
-        EV_FAIL("Cannot count a NULL vector\n");
-        return -1;
-    }
-
-    evhd_t *hdr =  EV_HDR(vec);
-    return hdr->obj_count;
-}
-
 #ifndef EV_NOECOUNT
-
 /**
  * Get the current size of the vector.
  * vec:         Pointer to the vector
@@ -373,6 +428,14 @@ size_t evvsz(void* vec)
     return hdr->slt_count;
 }
 
+
+/**
+ * Get the amount of memory currently used to store the vector including unused
+ * slots.
+ * vec:         Pointer to the vector
+ * return:      The amount of memory currently used to store the vector.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
 size_t evvmem(void* vec)
 {
     if(!vec){
@@ -383,6 +446,7 @@ size_t evvmem(void* vec)
     evhd_t *hdr = EV_HDR(vec);
     return hdr->slt_count * hdr->slt_size;
 }
+
 
 /**
  * Get the amount of memory currently used to store objects in the vector
@@ -420,58 +484,6 @@ size_t evtmem(void* vec)
 
 #endif
 
-/**
- * Free the memory used to hold the vector and its accounting.
- * vec:         Pointer to the vector
- * return:      NULL. Use vec = evfree(vec) to ensure there are no dangling
- *              pointers.
- * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
- */
-void* evfree(void* vec)
-{
-    if(!vec){
-        EV_FAIL("Cannot free empty vector!\n");
-        return NULL;
-    }
-
-    if(vec){
-        evhd_t *hdr =  EV_HDR(vec);
-        free(hdr);
-    }
-
-    return NULL;
-}
-
-/**
- * Return a the pointer to the slot at a given index.
- * vec:         Pointer to the vector
- * idx:         The index value. Cannot be <0 or greater than the object count
- * return:      Pointer to the value.
- * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
- */
-#ifndef EV_NOIDX
-void* evidx(void* vec, size_t idx)
-{
-    if(!vec){
-        EV_FAIL("Cannot get index of a NULL vector\n");
-        return NULL;
-    }
-
-    evhd_t *hdr =  EV_HDR(vec);
-
-    if(idx < 0){
-        EV_FAIL("Index cannot be <0 (idx=%" PRId64 ")\n", idx);
-    }
-
-    if(idx > hdr->obj_count - 1){
-        EV_FAIL("Index cannot be greater than number of objects (idx=%" PRId64 " > %" PRId64 ")\n" ,
-                idx,
-                hdr->obj_count -1);
-    }
-
-    return (char*)vec + hdr->slt_size * idx;
-}
-#endif
 
 /**
  * Sort the elements of the vector
@@ -481,7 +493,7 @@ void* evidx(void* vec, size_t idx)
  * return:      None. The vector will be sorted if this function succeeds.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
-#ifndef EV_NOSORT
+#ifndef EV_SORT
 void evsort(void* vec, int (*compar)(const void* a, const void* b))
 {
     if(!vec){
