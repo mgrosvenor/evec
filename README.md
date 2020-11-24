@@ -148,7 +148,7 @@ int main(int argc, char** argv)
         }       
     }  
 
-    for(int i =0; i < evcnt(a); i++){
+    for(int i = 0; i < evcnt(a); i++){
         printf("%i: %i\n", i, a[i]);
     }        
 
@@ -229,28 +229,28 @@ In these cases the init functions will be useful.
 **void\* evinit(type)**  <br/>
 Easy allocate a new vector, based on type information.
 <table>
-<tr><td> type 		</td><td> A fully specified C type. <td></tr>
-<tr><td> return 	</td><td> A pointer to the memory region, or NULL. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> type 		</td><td> A fully specified C type. </td></tr>
+<tr><td> return 	</td><td> A pointer to the memory region, or NULL. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
 **void\* evinisz(size_t sz)**  <br/>
 Easy allocate a new vector with slot sizes as given.
 <table>
-<tr><td> slt_size  </td><td> The size of each slot in the vector typically the size of the type that is being stored.<td></tr>
-<tr><td> return 	</td><td> A pointer to the memory region, or NULL. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> slt_size  </td><td> The size of each slot in the vector typically the size of the type that is being stored.</td></tr>
+<tr><td> return 	</td><td> A pointer to the memory region, or NULL. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
 **void\* evini(size_t slt_size, size_t count)**  <br/>
 Allocate a new vector and initialise it.
 <table>
-<tr><td> type 		</td><td> The size of each slot in the vector typically the size of the type that is being stored.<td></tr>
+<tr><td> type 		</td><td> The size of each slot in the vector typically the size of the type that is being stored.</td></tr>
 <tr><td> count     </td><td> The number of initial elements (of size slt_size) to be allocated. This should be set to the lower bound of the expected number of items (which could be zero). </td></tr>
-<tr><td> return 	</td><td> A pointer to the memory region, or NULL. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> return 	</td><td> A pointer to the memory region, or NULL. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
 
@@ -267,10 +267,10 @@ If the memory backing the vector is too small, memory will be reallocated to gro
 The reason for this wrapper macro is to make it easy to push literal values.
 
 <table>
-<tr><td> vec       </td><td> Pointer to type of object that is (or will become) the vector, eg. int* for a vector of ints.<td></tr>
-<tr><td> obj       </td><td> The value to push into the vector. <td></tr>
-<tr><td> return    </td><td> A pointer to the memory region, or NULL. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to type of object that is (or will become) the vector, eg. int* for a vector of ints.</td></tr>
+<tr><td> obj       </td><td> The value to push into the vector. </td></tr>
+<tr><td> return    </td><td> A pointer to the memory region, or NULL. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 <tr><td> quirks    </td><td> This macro works fine for all literals expect string literals, for which you probably want to store the char* pointer, but this doesn't really exist.
                                   For these types, you'll need to use the explicit evpush function. </td></tr>
 </table>
@@ -282,11 +282,11 @@ The if the vector is NULL, memory will be automatically allocated for INIT_COUNT
 
 If the memory backing the vector is too small, memory will be reallocated to grow the vector by the the GROWTH_FACTOR. e.g. 16B with a GROWTH_FACTOR=2 will grow to 32B.
 <table>
-<tr><td> vec       </td><td> Pointer to type of object that is (or will become) the vector, eg. int* for a vector of ints.<td></tr>
-<tr><td> obj       </td><td> Pointer to the value to push into the vector. <td></tr>
-<tr><td> obj_size  </td><td> The size of the value to be pushed into the vector. <td></tr>
-<tr><td> return    </td><td> A pointer to the memory region, or NULL. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to type of object that is (or will become) the vector, eg. int* for a vector of ints.</td></tr>
+<tr><td> obj       </td><td> Pointer to the value to push into the vector. </td></tr>
+<tr><td> obj_size  </td><td> The size of the value to be pushed into the vector. </td></tr>
+<tr><td> return    </td><td> A pointer to the memory region, or NULL. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
 ### Count and Index
@@ -296,9 +296,9 @@ These two simple functions help to navigate around the vector once created.
 Get the number of items in the vector.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> The number of objects in the vector. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> The number of objects in the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -306,10 +306,10 @@ Get the number of items in the vector.
 Return a the pointer to the slot at a given index.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector.<td></tr>
-<tr><td> idx       </td><td> The index value. Cannot be <0 or greater than the object count. <td></tr>
-<tr><td> return    </td><td> Pointer to the value at the given index <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> idx       </td><td> The index value. Cannot be <0 or greater than the object count. </td></tr>
+<tr><td> return    </td><td> Pointer to the value at the given index </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
 
@@ -321,10 +321,10 @@ At some point this memory should be freed.
 Free the memory used to hold the vector and its accounting.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> obj       </td><td> The value to push into the vector. <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> obj       </td><td> The value to push into the vector. </td></tr>
 <tr><td> return    </td><td> NULL. Use `vec = evfree(vec)` to ensure there are no dangling pointers.
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
 ### Pop and Delete
@@ -336,9 +336,9 @@ Remove the last value from the vector tail.
 **Note:** To use this function `EV_FPOP` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> None. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> None. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -348,10 +348,10 @@ Remove a value from the vector at the given index.
 **Note:** To use this function `EV_FDEL` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector.<td></tr>
-<tr><td> idx       </td><td> The index value. Cannot be <0 or greater than the object count. <td></tr>
-<tr><td> return    </td><td> None <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> idx       </td><td> The index value. Cannot be <0 or greater than the object count. </td></tr>
+<tr><td> return    </td><td> None </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
 ### Memory sizing functions
@@ -365,9 +365,9 @@ If you are looking for this functionality, please use `evcnt()` function describ
 **Note 2:** To use this function `EV_FMEMSZ` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> The number of slots in the vector. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> The number of slots in the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -377,9 +377,9 @@ Get the amount of memory currently used to store the vector including unused slo
 **Note:** To use this function `EV_FMEMSZ` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> The amount of memory currently used to store the vector. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> The amount of memory currently used to store the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -389,9 +389,9 @@ Get the amount of memory currently used to store objects in the vector
 **Note:** To use this function `EV_FMEMSZ` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> The amount of memory currently used to store objects in the vector. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> The amount of memory currently used to store objects in the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -401,9 +401,9 @@ Get the amount of memory currently used to store objects in the vector
 **Note:** To use this function `EV_FMEMSZ` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
-<tr><td> return    </td><td> The total amount of memory consumed by the vector. <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> return    </td><td> The total amount of memory consumed by the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -416,11 +416,11 @@ Sort the elements of the vector in place
 **Note:** To use this function `EV_FSORT` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the vector<td></tr>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
 <tr><td> compar    </td><td> Function pointer which implements the comparison function.
-                                  This function returns +ve if a > b, -ve if a < b and 0 if a==b. </td></tr>
-<tr><td> return    </td><td> None. The vector will be sorted in place if this function succeeds <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+                             This function returns +ve if a > b, -ve if a < b and 0 if a==b. </td></tr>
+<tr><td> return    </td><td> None. The vector will be sorted in place if this function succeeds </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
 
@@ -432,8 +432,8 @@ Create a new vector and copy the contents of the source vector into it.
 **Note:** To use this function `EV_FCOPY` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the sourcevector<td></tr>
-<tr><td> return    </td><td> A new vector with the same contents as the source <td></tr>
-<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); <td></tr>
+<tr><td> vec       </td><td> Pointer to the sourcevector</td></tr>
+<tr><td> return    </td><td> A new vector with the same contents as the source </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
