@@ -20,7 +20,7 @@ The following demo allocates a new vector and pushes the value of "1" into it.
 #include "evec.h"
 
 int* a = NULL;
-a = evpsh(a, 1);
+evpsh(a, 1);
 ~~~
 
 
@@ -60,9 +60,9 @@ For example:
 int main(int argc, char** argv)
 {
     int* a = NULLL
-    a = evpsh(a, 2);
-    a = evpsh(a, 4);
-    a = evpsh(a, 6);
+    evpsh(a, 2);
+    evpsh(a, 4);
+    evpsh(a, 6);
 
     for(int i =0; i < evcnt(a); i++){
         printf("%i: %i\n", i, a[i]);
@@ -94,10 +94,10 @@ For example:
 
 int main(int argc, char** argv)
 {
-    void\* a = evinisz(128);
-    a = evpsh(a, "Test");
-    a = evpsh(a, "Best");
-    a = evpsh(a, "Rest");
+    void* a = evinisz(128);
+    evpsh(a, "Test");
+    evpsh(a, "Best");
+    evpsh(a, "Rest");
 
     for(int i =0; i < evcnt(a); i++){
         char* s = (char*)evidx(a,i);
@@ -119,7 +119,7 @@ Finally, `evsort()` can be used to sort items.
 #define EV_FALL
 #include "evec.h"
 
-int compare(void\* lhs, void\* rhs)
+int compare(const void* lhs, const void* rhs)
 {
     int* a = (int*)lhs;
     int* b = (int*)rhs;
@@ -129,14 +129,14 @@ int compare(void\* lhs, void\* rhs)
 
 int main(int argc, char** argv)
 {
-    int* a = NULLL
-    a = evpsh(a, 2);
-    a = evpsh(a, 4);
-    a = evpsh(a, 6);
+    int* a = NULL;
+    evpsh(a, 2);
+    evpsh(a, 4);
+    evpsh(a, 6);
 
-    a = evpsh(a, 2);
-    a = evpsh(a, 4);
-    a = evpsh(a, 6);
+    evpsh(a, 2);
+    evpsh(a, 4);
+    evpsh(a, 6);
 
     evsort(a,compare);
 
@@ -144,6 +144,7 @@ int main(int argc, char** argv)
     for(int i = 1; i < evcnt(a); i++){
         if(a[i] == a[i-1]){
             evdel(a,i);
+            i--;
         }       
     }  
 
@@ -248,7 +249,7 @@ Allocate a new vector and initialise it.
 
 Functions to add a new data onto the back of the vector.   
 
-**void\* evpsh(vec, obj)**  <br/>
+**evpsh(vec, obj)**  <br/>
 
 Easy push a new value onto the tail of a vector.
 If the vector is NULL, memory will be automatically allocated for INIT_COUNT elements, based on the object size as returned by sizeof(obj).

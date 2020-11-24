@@ -163,7 +163,8 @@ void* _evgrow(void* vec)
 
     evhd_t* hdr = EV_HDR(vec);
     const size_t storage_bytes      = hdr->slt_size * hdr->slt_count;
-    const size_t new_storage_bytes  = storage_bytes * EV_GROWTH_FACTOR;
+    const size_t new_storage_bytes  = hdr->slt_count ? storage_bytes * EV_GROWTH_FACTOR :
+                                                      EV_INIT_COUNT * hdr->slt_size;
     const size_t full_bytes         = EV_HDR_BYTES + new_storage_bytes;
 
     hdr = realloc(hdr, full_bytes);
@@ -174,7 +175,7 @@ void* _evgrow(void* vec)
 
     memset((char*)hdr + EV_HDR_BYTES + storage_bytes, 0x00, new_storage_bytes - storage_bytes);
 
-    hdr->slt_count  *= EV_GROWTH_FACTOR;
+    hdr->slt_count  = hdr->slt_count ? hdr->slt_count * EV_GROWTH_FACTOR : EV_INIT_COUNT;
 
     void *vec_start = (char*)hdr + EV_HDR_BYTES;
 
@@ -191,6 +192,9 @@ void* _evgrow(void* vec)
  *
  * The reason for this wrapper macro is to make it easy to push literal values.
  *
+ * Note: This function is only available on compilers supporting GNU C
+ * extensions
+ *
  * vec:         Pointer to type of object that is (or will become) the vector,
  *              eg. int* for a vector of ints.
  * obj:         The value to push into the vector.
@@ -201,11 +205,16 @@ void* _evgrow(void* vec)
  *              doesn't really exist. For these types, you'll need to use the
  *              explicit evpush function.
  */
+#ifdef __GNUC__
 #define evpsh(vec, obj) do { \
-        typeof(obj) __OBJ__ = obj; \
+        __extension__ __typeof__(obj) __OBJ__ = obj; \
         vec = evpush(vec, &__OBJ__, sizeof(__OBJ__)); \
     }while(0)
-
+#else
+#define evpsh(vec, obj) do { \
+        vec = evpush(vec, &obj, sizeof(obj)); \
+    }while(0
+#endif
 /**
  * Push a new value onto the vector tail. The if the vector is NULL, memory
  * will be automatically allocated for INIT_COUNT elements, based on the
