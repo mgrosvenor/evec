@@ -163,20 +163,26 @@ int main(int argc, char** argv)
 **Hard Exit** <br/>
 By default EV will "fail hard and early".
 This means that `exit()` will be called on all errors.
-This default behaviour can be overridden by defining `EV_HARD_EXIT` as `0` e.g.
+This default behaviour can be overridden by defining `EV_HARD_EXIT` as `0` . 
+
+**Note**: This must be done before the "evec.h" header is included. e.g.
 
 ~~~C
 #define EV_HARD_EXIT 0
+#include "evec.h"
 ~~~
 
 <hr/>
 
 **Initial Slot Count** <br/>
 By default EV will allocate 8 slots in the vector.
-This can be overridden by defining the `EV_INIT_COUNT` value. e.g  
+This can be overridden by defining the `EV_INIT_COUNT` value.
+
+**Note**: This must be done before the "evec.h" header is included. e.g.
 
 ~~~C
 #define EV_INIT_COUNT 64
+#include "evec.h"
 ~~~
 
 <hr/>
@@ -185,10 +191,13 @@ This can be overridden by defining the `EV_INIT_COUNT` value. e.g
 **Growth Factor** <br/>
 By default EV grow the vector by a factor of 2 each time it runs out of slots.
 For example, if there are 64 slots, EV will grow the vector to 128.
-EV can be made to grow faster  the `EV_GROWTH_FACTOR` value. e.g
+EV can be made to grow faster  the `EV_GROWTH_FACTOR` value.
+
+**Note**: This must be done before the "evec.h" header is included. e.g.
 
 ~~~C
 #define EV_GROWTH_FACTOR 3
+#include "evec.h"
 ~~~
 
 <hr/>
