@@ -416,7 +416,7 @@ Sort the elements of the vector in place
 ### Copying
 
 **void\* evcpy(void\* src)**  <br/>
-Make a new copy of the vector, including allocating underlying memory.
+Create a new vector and copy the contents of the source vector into it.
 
 **Note:** To use this function `EV_FCOPY` or `EV_FALL` must be defined.
 

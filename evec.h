@@ -514,7 +514,7 @@ void evsort(void* vec, int (*compar)(const void* a, const void* b))
 
 
 /**
- * Creat a new vector and copy the contents of this vector into it.
+ * Create a new vector and copy the contents of the source vector into it.
  * src:         Pointer to the source vector
  * return:      A new vector with the same contents as the source.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
