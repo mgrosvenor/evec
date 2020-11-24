@@ -157,7 +157,6 @@ int main(int argc, char** argv)
 ~~~
 
 
-## Detailed Documentation
 ### Build Macros
 
 **Hard Exit** <br/>
@@ -209,6 +208,7 @@ Beyond those basic functions, other advanced functions require specific inclusio
 - `EV_FSORT` - Sort function to sort the vector contents
 
 
+## Detailed Documentation
 ### Initialisation
 These functions allocate a new vector and initialise it.
 Typically it is not necessary to call them directly because the various push functions will do this for you.
