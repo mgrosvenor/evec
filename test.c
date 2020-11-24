@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define EV_FALL
 #include "evec.h"
 
 void hexdump(const void *data, int size)

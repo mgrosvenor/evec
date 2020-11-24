@@ -26,10 +26,17 @@
 #include <libgen.h>
 #include <unistd.h>
 
-
+#ifndef EV_HARD_EXIT
 #define EV_HARD_EXIT       1 //Fail to exit(0xDEAD).
-#define EV_INIT_COUNT      8 //Start with 8 objects
+#endif
+
+#ifndef EV_INIT_COUNT
+#define EV_INIT_COUNT      8 //Start with 8 slots
+#endif
+
+#ifndef EV_GROWTH_FACTOR
 #define EV_GROWTH_FACTOR   2 //Grow by a factor of x when space runs out
+#endif
 
 //Round up to the nearest long. Just a bit of memory safety paranoia
 typedef long align;
@@ -184,9 +191,9 @@ void* _evgrow(void* vec)
  *
  * The reason for this wrapper macro is to make it easy to push literal values.
  *
- * vec:         pointer to type of object that is (or will become) the vector,
+ * vec:         Pointer to type of object that is (or will become) the vector,
  *              eg. int* for a vector of ints.
- * obj:         the value to push into the vector.
+ * obj:         The value to push into the vector.
  * return:      A pointer to the memory region, or NULL.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  * quirks:      This macro works fine for all literals expect string literals,
@@ -209,7 +216,7 @@ void* _evgrow(void* vec)
  * will grow to 32B.
  * vec:         pointer to type of object that is (or will become) the vector,
  *              eg. int* for a vector of ints.
- * obj:         the value to push into the vector.
+ * obj:         pointer to the value to push into the vector.
  * obj_size:    the size of the value to be pushed into the vector.
  * return:      A pointer to the memory region, or NULL.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
@@ -278,7 +285,6 @@ size_t evcnt(void* vec)
  * return:      Pointer to the value.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
-#ifndef EV_IDX
 void* evidx(void* vec, size_t idx)
 {
     if(!vec){
@@ -300,7 +306,6 @@ void* evidx(void* vec, size_t idx)
 
     return (char*)vec + hdr->slt_size * idx;
 }
-#endif
 
 
 /**
@@ -333,7 +338,7 @@ void* evfree(void* vec)
  * return:      None
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
-#ifndef EV_NOPOP
+#if defined EV_FPOP || defined EV_FALL
 void evpop(void *vec)
 {
     if(!vec) {
@@ -358,7 +363,7 @@ void evpop(void *vec)
  * return:      None
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
-#ifndef EV_NODEL
+#if defined EV_FDEL || defined EV_FALL
 void evdel(void *vec, size_t idx)
 {
     if (!vec) {
@@ -410,7 +415,7 @@ void evdel(void *vec, size_t idx)
 #endif
 
 
-#ifndef EV_NOECOUNT
+#if defined EV_FMEMSZ  || defined EV_FALL
 /**
  * Get the current size of the vector.
  * vec:         Pointer to the vector
@@ -493,7 +498,7 @@ size_t evtmem(void* vec)
  * return:      None. The vector will be sorted if this function succeeds.
  * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
  */
-#ifndef EV_SORT
+#if defined EV_FSORT  | defined EV_FALL
 void evsort(void* vec, int (*compar)(const void* a, const void* b))
 {
     if(!vec){
@@ -505,5 +510,35 @@ void evsort(void* vec, int (*compar)(const void* a, const void* b))
     qsort(vec,hdr->obj_count,hdr->slt_size,compar);
 }
 #endif
+
+
+
+/**
+ * Creat a new vector and copy the contents of this vector into it.
+ * src:         Pointer to the source vector
+ * return:      A new vector with the same contents as the source.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+#if defined EV_FCOPY  | defined EV_FALL
+void* evcpy(void* src)
+{
+    if(!src){
+        EV_FAIL("Cannot copy a NULL vector\n");
+        return NULL;
+    }
+    evhd_t *src_hdr =  EV_HDR(src);
+    void* result = NULL;
+    result = evini(src_hdr->slt_size, src_hdr->slt_count);
+    if(!result){
+        EV_FAIL("Could not create new vector memory to copy into\n");
+        return NULL;
+    }
+
+    memcpy(result,src,src_hdr->slt_size * src_hdr->obj_count);
+
+    return result;
+}
+#endif
+
 
 #endif /* EVH_ */
