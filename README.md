@@ -44,7 +44,7 @@ Done. It's that easy!
 
 There are 3 core functions required to use EV.  
 1. Add values into the vector using `evpsh()` functions.
-   This will automatically allocate a new vector structure if none exits.
+   This will automatically allocate a new vector structure if none exists.
 2. Retrieve the number of items in the vector using `evcnt()`.
    This is useful to iterate over the final vector.
 3. Free the structure when done using `evfree()`.
