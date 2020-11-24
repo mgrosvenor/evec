@@ -4,10 +4,11 @@ It's designed for situations like options parsing where building up an unknown a
 
 It has a number of features:
 - **Easy**: EV is designed to make the code as easy to use a possible.
-            Helps you to focus on solving your problem, not on learning yet another thing.  
+            Helps you to focus on solving your problem, not on learning yet another thing.
 - **Simple**: The entire code base is only a few hundered lines, contained in a single header file.
 - **Cheap**: EV has a pay-for-what-you-use model.
-             Most "features" are optional, included only with a #define. There's no cost
+             Most "features" are optional, included only with a `#define`.
+             This means that there's no cost for functions that you don't need.
 
 
 ## Quick Start
@@ -42,7 +43,7 @@ Done. It's that easy!
 
 ## Core Functions
 
-There are 3 core functions required to use EV.  
+There are 3 core functions required to use EV.
 1. Add values into the vector using `evpsh()` functions.
    This will automatically allocate a new vector structure if none exists.
 2. Retrieve the number of items in the vector using `evcnt()`.
@@ -80,7 +81,7 @@ The simplest way is to use `#define EV_ALLFEATS`.
 More fine grained options are docuemented under in the [build macros](#build-macros) section.
 
 It's not always possible to (or desired) for each vector slot to be sized based on the type information provided by `evpsh()` or `evnit()`.
-In these situations, the `evinisz()` may be used to allocate specific slot sizes.  
+In these situations, the `evinisz()` may be used to allocate specific slot sizes.
 To iterate over these custom sizes, use `evidx()` which is aware of the slot sizes.
 For example:
 
@@ -109,7 +110,7 @@ int main(int argc, char** argv)
 ~~~
 
 For more advanced uses of EV, you may want to remove items from the vector, you can do this with `evpop()` which ejects the last item from the vector.
-Alternatively, `evedel()` can be used to remove an item at a given index.  
+Alternatively, `evedel()` can be used to remove an item at a given index.
 Finally, `evsort()` can be used to sort items.
 
 ~~~C
@@ -183,8 +184,8 @@ This can be overridden by defining the `EV_INIT_COUNT` value. e.g
 
 **Growth Factor** <br/>
 By default EV grow the vector by a factor of 2 each time it runs out of slots.
-For example, if there are 8 slots, EV will grow the vector to 16.  
-EV can be made to grow faster  the `EV_INIT_COUNT` value. e.g  
+For example, if there are 8 slots, EV will grow the vector to 16.
+EV can be made to grow faster  the `EV_INIT_COUNT` value. e.g
 
 ~~~C
 #define EV_INIT_COUNT 64
@@ -332,7 +333,7 @@ Remove the last value from the vector tail.
 <hr/>
 
 **void\* evdel(void\* vec, size_t idx)**  <br/>
-Remove a value from the vector at the given index
+Remove a value from the vector at the given index.
 
 **Note:** To use this function `EV_FDEL` or `EV_FALL` must be defined.
 
