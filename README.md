@@ -176,7 +176,7 @@ By default EV will allocate 8 slots in the vector.
 This can be overridden by defining the `EV_INIT_COUNT` value. e.g  
 
 ~~~C
-#define EV_GROWTH_FACTOR 3
+#define EV_INIT_COUNT 64
 ~~~
 
 <hr/>
@@ -184,11 +184,11 @@ This can be overridden by defining the `EV_INIT_COUNT` value. e.g
 
 **Growth Factor** <br/>
 By default EV grow the vector by a factor of 2 each time it runs out of slots.
-For example, if there are 8 slots, EV will grow the vector to 16.
+For example, if there are 64 slots, EV will grow the vector to 128.
 EV can be made to grow faster  the `EV_INIT_COUNT` value. e.g
 
 ~~~C
-#define EV_INIT_COUNT 64
+#define EV_GROWTH_FACTOR 3
 ~~~
 
 <hr/>
