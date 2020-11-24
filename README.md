@@ -77,7 +77,7 @@ int main(int argc, char** argv)
 ## Advanced Usage
 Beyond these basic functions, EV provides more advanced options.
 These options require compile time `#defines` to include them.
-The simplest way is to use `#define EV_ALLFEATS`.
+The simplest way is to use `#define EV_FALL`.
 More fine grained options are docuemented under in the [build macros](#build-macros) section.
 
 It's not always possible to (or desired) for each vector slot to be sized based on the type information provided by `evpsh()` or `evnit()`.
