@@ -11,6 +11,7 @@ It has a number of features:
              This means that there's no cost for functions that you don't need.
 
 EV is licensed under a BSD 3-Clause license to make it simple and easy to integrate into any open or closed source project.
+See [Licensing](#licensing) section for more details.
 
 ## Quick Start
 
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
 **Hard Exit** <br/>
 By default EV will "fail hard and early".
 This means that `exit()` will be called on all errors.
-This default behaviour can be overridden by defining `EV_HARD_EXIT` as `0` . 
+This default behaviour can be overridden by defining `EV_HARD_EXIT` as `0` .
 
 **Note**: This must be done before the "evec.h" header is included. e.g.
 
@@ -192,7 +193,7 @@ This can be overridden by defining the `EV_INIT_COUNT` value.
 **Growth Factor** <br/>
 By default EV grow the vector by a factor of 2 each time it runs out of slots.
 For example, if there are 64 slots, EV will grow the vector to 128.
-EV can be made to grow faster  the `EV_GROWTH_FACTOR` value.
+EV can be made to grow faster by setting the `EV_GROWTH_FACTOR` value.
 
 **Note**: This must be done before the "evec.h" header is included. e.g.
 
@@ -439,7 +440,7 @@ Create a new vector and copy the contents of the source vector into it.
 </table>
 <hr/>
 
-## Licensing 
+## Licensing
 
 Copyright (c) 2020, Matthew P. Grosvenor
 All rights reserved.
