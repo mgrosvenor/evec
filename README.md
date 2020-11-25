@@ -10,6 +10,7 @@ It has a number of features:
              Most "features" are optional, included only with a `#define`.
              This means that there's no cost for functions that you don't need.
 
+EV is licensed under a BSD 3-Clause license to make it simple and easy to integrate into any open or closed source project.
 
 ## Quick Start
 
@@ -211,12 +212,12 @@ The following functions are included in all builds:
 - Memory free - `evfree()`
 
 Beyond those basic functions, other advanced functions require specific inclusion in the build by defining the following:
-- `EV_FALL` - All advanced functions are included
 - `EV_FPOP` - Pop function to remove an item from the tail
 - `EV_FEDL` - Delete function to remove an item from anywhere
 - `EV_FMEMSZ` - Memory sizing functions including `evvsz()`, `evvmem()`, `evomem()`, `evtmem()`
 - `EV_FSORT` - Sort function to sort the vector contents
-
+- `EV_FCOPY` - Funciton to copy one EV vector and make a new one
+- `EV_FALL` - All above functions are included
 
 ## Detailed Documentation
 ### Initialisation
@@ -437,3 +438,33 @@ Create a new vector and copy the contents of the source vector into it.
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
+
+## Licensing 
+
+Copyright (c) 2020, Matthew P. Grosvenor
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
