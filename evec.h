@@ -342,6 +342,11 @@ void* evidx(void* vec, size_t idx)
 
     evhd_t *hdr =  EV_HDR(vec);
 
+    if(hdr->obj_count == 0){
+        EV_FAIL("Cannot get index of empty vector\n");
+        return NULL;
+    }
+
     if(idx < 0){
         EV_FAIL("Index cannot be <0 (idx=%" PRId64 ")\n", idx);
     }
@@ -351,6 +356,7 @@ void* evidx(void* vec, size_t idx)
                 idx,
                 hdr->obj_count -1);
     }
+
 
     return (char*)vec + hdr->slt_size * idx;
 }
@@ -574,15 +580,16 @@ void* evcpy(void* src)
         EV_FAIL("Cannot copy a NULL vector\n");
         return NULL;
     }
-    evhd_t *src_hdr =  EV_HDR(src);
+    evhd_t *src_hdr = EV_HDR(src);
     void* result = NULL;
     result = evini(src_hdr->slt_size, src_hdr->slt_count);
     if(!result){
         EV_FAIL("Could not create new vector memory to copy into\n");
         return NULL;
     }
+    evhd_t *res_hdr = EV_HDR(result);
 
-    memcpy(result,src,src_hdr->slt_size * src_hdr->obj_count);
+    memcpy(res_hdr,src_hdr,EV_HDR_BYTES + src_hdr->slt_size * src_hdr->obj_count);
 
     return result;
 }
