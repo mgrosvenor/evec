@@ -8,7 +8,7 @@
  * - Use the default initialization function evinit()
  * - Test that automatic allocation is sane ie, object count is 0, slot count is
  *   8 (or whatever EV_INIT_COUNT is set to).
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  * */
 static int test1()
 {
@@ -23,7 +23,7 @@ static int test1()
  * - Use the slot size based initialization function evinisz()
  * - Test that automatic allocation is sane ie, object count is 0, slot count is
  *   8 (or whatever EV_INIT_COUNT is set to).
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  * */
 static int test2()
 {
@@ -38,7 +38,7 @@ static int test2()
  * - Use the slot size and count based initialization function evinisz()
  * - Test that automatic allocation is sane ie, object count is 0, slot count is
  *   as specifed (e.g. 64)
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  * */
 static int test3()
 {
@@ -55,7 +55,7 @@ static int test3()
  * - Push 1000 ints into vector.
  * - Test that automatic memory growing works (with valgrind).
  * - Test the evidx() function returns pointer to the right places.
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test4()
 {
@@ -80,7 +80,7 @@ static int test4()
  * - Push 1000 strings into vector.
  * - Test that automatic memory growing works (with valgrind).
  * - Test the evidx() function returns pointer to the right places.
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test5()
 {
@@ -105,7 +105,7 @@ static int test5()
  * - Push 1000 strings into vector.
  * - Test that automatic memory growing works (with valgrind).
  * - Test the evidx() function returns pointer to the right places.
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test6()
 {
@@ -131,7 +131,7 @@ static int test6()
  * - Push 1000 strings into vector.
  * - Test that automatic memory growing works (with valgrind).
  * - Test the evidx() function returns pointer to the right places.
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test7()
 {
@@ -163,7 +163,7 @@ static int test7()
  * - Test that automatic memory growing works (with valgrind).
  * - Test that evsort() works
  * - Test that evdel() function works
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int compare(const void* lhs, const void* rhs)
 {
@@ -221,7 +221,7 @@ static int test8() {
  * - Test that automatic memory growing works (with valgrind).
  * - Test that evidx() works
  * - Test that evdel() function works
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test9()
 {
@@ -252,7 +252,7 @@ static int test9()
  * - Test that automatic memory growing works (with valgrind).
  * - Test that evidx() works
  * - Test that evpop() function works
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  */
 static int test10()
 {
@@ -283,7 +283,7 @@ static int test10()
  * - Test the memory growing works (with valgrind)
  * - Make a copy of the vector.
  * - Test that the copies are the same.
- * - Test the evfree() works (with valgrind).
+ * - Test that evfree() works (with valgrind).
  * */
 static int test11()
 {
