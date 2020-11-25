@@ -9,7 +9,7 @@ all: debug
 release: CFLAGS += -O3 -DNDEBUG
 release: test
 
-debug: CFLAGS += -pedantic -Werror -Wno-language-extension-token -std=c99
+debug: CFLAGS += -Werror -g
 debug: test
 
 test: test.c evec.h

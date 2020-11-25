@@ -75,10 +75,8 @@ typedef long align;
  * Magic values are included so that it's easy to spot the memory segment in
  * a hexdump, and to protect from any violations that might happen by accident
  */
-#define EV_MAGIC1 "EV_MAGIC"
-#define EV_MAGIC2 "MAGIC_EV"
-
-
+#define EV_MAGIC1 "EVMAGIC"
+#define EV_MAGIC2 "MAGICEV"
 typedef struct {
     char magic1[8];
     int64_t slt_size;
@@ -87,11 +85,22 @@ typedef struct {
     char magic2[8];
 } evhd_t;
 
+
+#define EV_DU_HDR(hdr) _evdumphdr(__LINE__, __FILE__, __FUNCTION__, hdr)
+void _evdumphdr(int ln, char* fn, const char* fu, evhd_t* hdr){
+    dprintf(STDERR_FILENO,"[HEADER :   %s:%i:%s()] ", basename(fn), ln, fu);
+    dprintf(STDERR_FILENO,"magic1: %s, ", hdr->magic1);
+    dprintf(STDERR_FILENO,"slt_size: %" PRId64 ", ", hdr->slt_size);
+    dprintf(STDERR_FILENO,"slt_count: %" PRId64 ", ", hdr->slt_count);
+    dprintf(STDERR_FILENO,"obj_count: %" PRId64 ", ", hdr->obj_count);
+    dprintf(STDERR_FILENO,"magic2: %s\n", hdr->magic2);
+}
+
+
 /*
  * This debugging code liberally borrowed and adapted from libchaste by
  * M.Grosvenor BSD 3 clause license. https://github.com/mgrosvenor/libchaste
  */
-
 typedef enum {
     EV_MSG_DBG,
     EV_MSG_WARN,
@@ -109,6 +118,8 @@ typedef enum {
 #else
     #define EV_DBG( /*format, args*/...)
 #endif
+
+
 
 static inline void _evmsg(evdbg_e mode, int ln, char* fn, const char* fu, const char* msg, ... )
 {
@@ -141,7 +152,7 @@ static inline void _evmsg(evdbg_e mode, int ln, char* fn, const char* fu, const 
  */
 void* evini(size_t slt_size, size_t count)
 {
-    size_t store_bytes  = EV_INIT_COUNT * slt_size;
+    size_t store_bytes  = count * slt_size;
     size_t full_bytes = EV_HDR_BYTES + store_bytes;
 
     evhd_t *hdr = (evhd_t*)malloc(full_bytes);
@@ -293,6 +304,7 @@ void* evpush(void* vec, void* obj, size_t obj_size)
     void* next_obj = ((char*)result) + hdr->slt_size * hdr->obj_count;
     memcpy(next_obj,obj,obj_size);
     hdr->obj_count++;
+
     return result;
 }
 
