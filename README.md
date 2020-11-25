@@ -13,6 +13,10 @@ It has a number of features:
 EV is licensed under a BSD 3-Clause license to make it simple and easy to integrate into any open or closed source project.
 See [Licensing](#licensing) section for more details.
 
+EV should be compatible with any sensible compiler on any reasonable OS.
+It has been tested on Linux (x86) (Ubuntu 20.04) with GCC (9.3) compiler and on
+MacOS X (x86) with Clang compiler (11.0.3)
+
 ## Quick Start
 
 Getting started with Easy Vector is ... easy.
