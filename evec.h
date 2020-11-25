@@ -452,12 +452,6 @@ void evdel(void *vec, size_t idx)
         return;
     }
 
-    if(idx == hdr->obj_count - 1){
-        //Removing the last item. Fast exit.
-        evpop(vec);
-        return;
-    }
-
     void* curr_obj = (char*)vec + hdr->slt_size * (idx + 0);
     void* next_obj = (char*)vec + hdr->slt_size * (idx + 1);
     const size_t to_move = hdr->slt_size * (hdr->obj_count - idx);

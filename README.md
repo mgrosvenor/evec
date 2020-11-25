@@ -65,7 +65,7 @@ For example:
 
 int main(int argc, char** argv)
 {
-    int* a = NULLL
+    int* a = NULL;
     evpsh(a, 2);
     evpsh(a, 4);
     evpsh(a, 6);
@@ -130,7 +130,7 @@ int compare(const void* lhs, const void* rhs)
     int* a = (int*)lhs;
     int* b = (int*)rhs;
 
-    return *a < *b;
+    return *b - *a;
 }
 
 int main(int argc, char** argv)
