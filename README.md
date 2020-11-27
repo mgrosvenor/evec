@@ -33,7 +33,7 @@ evpsh(a, 1);
 Once you have some values in the vector, you may want to iterate over them  
 
 ~~~C
-for(int a = 0; i < evcnt(a); i++){
+for(int i = 0; i < evcnt(a); i++){
     printf("%i, ", a[i]);
 }
 ~~~
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     evpsh(a, 4);
     evpsh(a, 6);
 
-    for(int i =0; i < evcnt(a); i++){
+    for(int i = 0; i < evcnt(a); i++){
         printf("%i: %i\n", i, a[i]);
     }  
 
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
     evpsh(a, "Best");
     evpsh(a, "Rest");
 
-    for(int i =0; i < evcnt(a); i++){
+    for(int i = 0; i < evcnt(a); i++){
         char* s = (char*)evidx(a,i);
         printf("%i: %s\n", i, s);
     }  
