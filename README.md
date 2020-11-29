@@ -17,26 +17,53 @@ EV should be compatible with any sensible compiler on any reasonable OS.
 It has been tested on Linux (x86) (Ubuntu 20.04) with GCC (9.3) compiler and on
 MacOS X (x86) with Clang compiler (11.0.3)
 
-## Quick Start
+For release notes/change log please see the [Release Notes](#release-notes) section.
+
+## Getting Started
 
 Getting started with Easy Vector is ... easy.
-The following demo allocates a new vector and pushes the value of "1" into it.
+You can use EV in just 4 simple steps
+
+### Step 1 - Copy the header file
+Copy the `evec.h` header file into your project, and include it in your code like this:
 
 ~~~C
 #include "evec.h"
+~~~
 
+EV supports a number of build time options.
+See [Build Time Options](#build-time-options) for more details.  
+
+### Step 2 - Push values into vector
+
+EV tries to automatically allocate a new vector structure and sensibly push values into it.
+For example:
+
+~~~C
 int* a = NULL;
 evpsh(a, 1);
 ~~~
 
+There are lots of options for ways allocate and push values into EV.
+For more details see [Core Functions](#core-functions) section.
 
-Once you have some values in the vector, you may want to iterate over them  
+
+### Step 3 - Access vector values
+
+Once you have some values in the vector, you may want to iterate over them, for example:  
 
 ~~~C
 for(int i = 0; i < evcnt(a); i++){
     printf("%i, ", a[i]);
 }
 ~~~
+
+
+**One quick note:** EV does not guarantee that values are stable (ie stored in the same location in memory).
+If you need to access values, consistently across pushes, please use the `evidx()` function.
+More details can be found in the [Core Functions](#core-functions) section.  
+
+### Step 4 - Free resources
 
 Eventually, you'll want to clean up the mess afterwards.
 
@@ -164,12 +191,12 @@ int main(int argc, char** argv)
 ~~~
 
 
-### Build Macros
+### Build Time Options
 
 **Hard Exit** <br/>
 By default EV will "fail hard and early".
 This means that `exit()` will be called on all errors.
-This default behaviour can be overridden by defining `EV_HARD_EXIT` as `0` .
+This default behavior can be overridden by defining `EV_HARD_EXIT` as `0` .
 
 **Note**: This must be done before the "evec.h" header is included. e.g.
 
@@ -193,7 +220,6 @@ This can be overridden by defining the `EV_INIT_COUNT` value.
 
 <hr/>
 
-
 **Growth Factor** <br/>
 By default EV grow the vector by a factor of 2 each time it runs out of slots.
 For example, if there are 64 slots, EV will grow the vector to 128.
@@ -207,6 +233,53 @@ EV can be made to grow faster by setting the `EV_GROWTH_FACTOR` value.
 ~~~
 
 <hr/>
+
+**Pedantic Error Checking** <br/>
+By default EV will apply reasonably pedantic error checking.
+For example, checking in most functions that the vector supplied is not null.
+You may want to avoid these checks if you trust your code.
+EV can be made to avoid pedantic by setting `EV_PEDANTIC` to 0.
+
+**Note**: This must be done before the "evec.h" header is included. e.g.
+
+~~~C
+#define EV_PEDANTIC 0
+#include "evec.h"
+~~~
+
+<hr/>
+
+**Multiple Compilation Units (.c files)**<br/>
+You may want to use EV in multiple C files across your project.
+If you do this, you may get an error something like:
+
+```
+duplicate symbol '_evpush' in:
+    /var/folders/sy/v5c7yz1j1mn0jhd1bcc6b1nr0000gn/T/test-6a1637.o
+    /var/folders/sy/v5c7yz1j1mn0jhd1bcc6b1nr0000gn/T/test2-8b2b8d.o
+```
+
+This is because C function definitions are global, so the compiler is seeing the EV functions defined more than once.  This can easily be resolved by telling EV only to include the function declarations (but not definitions).
+You can do this with the following
+
+```C
+//This is test1.c
+#include "evec.h"
+```
+
+```C
+//This is test2.c
+#define EV_HONLY
+#include "evec.h"
+```
+
+```C
+//This is test3.c
+#define EV_HONLY
+#include "evec.h"
+```
+
+
 
 **Function Availability** <br/>
 
@@ -438,11 +511,32 @@ Create a new vector and copy the contents of the source vector into it.
 **Note:** To use this function `EV_FCOPY` or `EV_FALL` must be defined.
 
 <table>
-<tr><td> vec       </td><td> Pointer to the sourcevector</td></tr>
+<tr><td> vec       </td><td> Pointer to the source vector</td></tr>
 <tr><td> return    </td><td> A new vector with the same contents as the source </td></tr>
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 <hr/>
+
+
+## Release notes
+**25 Nov 2020** - V1.0 <br/>
+- Initial release.
+
+<hr/>
+<br/>
+
+**29 Nov 2020** - V1.1 <br/>
+- Improved quick start documentation with step by step guide.
+- Added release notes to documentation
+- Added multiple compilation unit support with `EV_HONLY` define.
+- Added `test2.c` to show off multiple compilation unit support.  
+- Made pedantic checking optional with `EV_PEDATNIC` define.
+- Made debug printing optional with `EV_DEBUG` define.
+
+
+<hr/>
+<br/>
+
 
 ## Licensing
 

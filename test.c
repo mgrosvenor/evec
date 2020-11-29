@@ -12,6 +12,7 @@
  * */
 static int test1()
 {
+    EV_DBG("test 1\n");
     int* a = evinit(int);
     if(evcnt(a) != 0) return 0;
     if(evvsz(a) != EV_INIT_COUNT) return 0;

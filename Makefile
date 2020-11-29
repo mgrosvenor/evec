@@ -12,8 +12,8 @@ release: demo1 demo2 demo3
 debug: CFLAGS += -Werror -g
 debug: test demo1 demo2 demo3
 
-test: test.c evec.h 
-	$(CC) -o $@ test.c $(CFLAGS) $(LIBS)
+test: test.c test2.c evec.h 
+	$(CC) -o $@ test.c test2.c $(CFLAGS) $(LIBS)
 
 demo1: demo1.c evec.h 
 	$(CC) -o $@ demo1.c $(CFLAGS) $(LIBS)
