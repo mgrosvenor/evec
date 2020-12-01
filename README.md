@@ -25,7 +25,7 @@ Getting started with Easy Vector is ... easy.
 You can use EV in just 4 simple steps
 
 ### Step 1 - Copy the header file
-Copy the `evec.h` header file into your project, and include it in your code like this:
+Copy the `evec.h` header file from [here](https://github.com/mgrosvenor/evec/raw/main/evec.h) and save it into your project. Include it in your code like this:
 
 ~~~C
 #include "evec.h"
