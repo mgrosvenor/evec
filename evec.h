@@ -337,12 +337,14 @@ typedef struct {
     int64_t slt_size;
     int64_t obj_count;
     int64_t slt_count;
+    int64_t index;
     char magic2[8];
 } evhd_t;
 
 
 #define EV_DU_HDR(hdr) _evdumphdr(__LINE__, __FILE__, __FUNCTION__, hdr)
-void _evdumphdr(int ln, char* fn, const char* fu, evhd_t* hdr){
+void _evdumphdr(int ln, char* fn, const char* fu, evhd_t* hdr)
+{
     dprintf(STDERR_FILENO,"[HEADER :   %s:%i:%s()] ", basename(fn), ln, fu);
     dprintf(STDERR_FILENO,"magic1: %s, ", hdr->magic1);
     dprintf(STDERR_FILENO,"slt_size: %" PRId64 ", ", hdr->slt_size);
@@ -432,6 +434,11 @@ int _evhdrcheck(evhd_t* hdr)
 
     if(hdr->obj_count < 0){
         EV_FAIL("Object count cannot be less than zero!\n");
+        return -1;
+    }
+
+    if(hdr->index < 0){
+        EV_FAIL("Index value cannot be less than zero!\n");
         return -1;
     }
 
@@ -580,6 +587,56 @@ void* evtail(void* vec)
     return evidx(vec,evcnt(vec) -1);
 }
 
+void* evhead(void* vec)
+{
+    ifp(!vec,
+    return NULL;
+    );
+
+    evhd_t *hdr =  EV_HDR(vec);
+    ifp(_evhdrcheck(hdr),
+        EV_FAIL("Header sanity check failed\n");
+        return NULL;
+    );
+
+    ifp(hdr->obj_count == 0,
+        return NULL;
+    );
+
+    hdr->index = 0;
+
+    return evidx(vec,hdr->index);
+}
+
+void* evnext(void* vec)
+{
+    ifp(!vec,
+        EV_FAIL("Cannot get next item in a NULL vector\n");
+                return NULL;
+    );
+
+    evhd_t *hdr =  EV_HDR(vec);
+    ifp(_evhdrcheck(hdr),
+        EV_FAIL("Header sanity check failed\n");
+                return NULL;
+    );
+
+    ifp(hdr->obj_count == 0,
+        EV_FAIL("Cannot get next item in an empty vector\n");
+                return NULL;
+    );
+
+    hdr->index++;
+    if(hdr->index >= hdr->obj_count){
+        return NULL;
+    }
+
+    return evidx(vec,hdr->index);
+
+}
+
+#define eveach(var,vec) \
+    for(typeof(vec) var = evhead(vec); var; var = evnext(vec))
 
 void* evfree(void* vec)
 {

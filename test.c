@@ -314,6 +314,61 @@ static int test11()
 }
 
 
+/* Test 12
+ * - make an empty vector
+ * - try counting the number of items in it (this should succeed!)
+ * - add a thousand random elements to it and sum them
+ * - check that the head and fail functions work.
+ * - iterate over the vector using "each" function and sum the elements.
+ * - check that it's equal to the sum above
+ * */
+static int test12()
+{
+    int* a = NULL;
+    size_t c = evcnt(a);
+    if(c != 0){
+        return 0;
+    }
+
+    int sum1    = 0;
+    int first   = 0;
+    int last    = 0;
+    int r       = -1;
+    for(int i = 0; i < 1000; i++){
+        r = rand();
+        if(i == 0){
+            first = r;
+        }
+
+        evpsh(a,r);
+        sum1 += r;
+    }
+
+    last = r;
+
+    if(first != *(int*)evhead(a)){
+        return 0;
+    }
+
+    if(last != *(int*)evtail(a)){
+        return 0;
+    }
+
+    int sum2 = 0;
+    eveach(ai, a){
+        sum2 += *ai;
+    }
+
+    if(sum1 != sum2){
+        return 0;
+    }
+
+    evfree(a);
+
+    return 1;
+}
+
+
 typedef int (*test_fn)();
 typedef struct {
     char* name;
@@ -333,6 +388,7 @@ Test tests[] = {
     {"evpsh del",       test9},
     {"evpsh pop",       test10},
     {"evpsh copy",      test11},
+    {"evpsh zero first each",      test12},
     {0}
 };
 

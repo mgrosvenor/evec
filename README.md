@@ -106,6 +106,32 @@ int main(int argc, char** argv)
 }
 ~~~
 
+While the iteration method above works, most of the time you will want to iterate over all of elements in the vector. 
+EV provides a shortcut for doing this using the `eveach()` macro. Using the macro, the above code is simplifed to: 
+
+
+~~~C
+#include <stdio.h>
+#include "evec.h"
+
+
+int main(int argc, char** argv)
+{
+    int* a = NULL;
+    evpsh(a, 2);
+    evpsh(a, 4);
+    evpsh(a, 6);
+
+    eveach(ai,a){
+        printf("%i\n", *ai);
+    }  
+
+    a = evfree(a);
+    return 0;
+}
+~~~
+
+
 
 ## Advanced Usage
 Beyond these basic functions, EV provides more advanced options.
@@ -286,7 +312,7 @@ You can do this with the following
 The following functions are included in all builds:
 - Initialisation functions - `evinit()`,`evinisz()`,`evini()`
 - Push functions - `evpsh()`,`evpush()`
-- Count and index functions - `evcnt()`, `evidx()`
+- Iteration and access functions - `eveach()`, `evcnt()`, `evidx()`, `evhead()`, `evnext()`, `evtail()` 
 - Memory free - `evfree()`
 
 Beyond those basic functions, other advanced functions require specific inclusion in the build by defining the following:
@@ -368,11 +394,29 @@ If the memory backing the vector is too small, memory will be reallocated to gro
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
-### Count and Index
-These two simple functions help to navigate around the vector once created.
+### Access and Iteration 
+These functions help to navigate around the vector once created.
+
+**eveach(var, vector){...}** <br/>
+Macro to help iterate over each element of the `vector`, putting a pointer to the element in `var`.
+This macro is equivalent to
+
+```C
+ for(typeof(vec) var = evhead(vec); var; var = evnext(vec))
+```
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> var       </td><td> Variable name for the iterator </td></tr>
+<tr><td> return    </td><td> This macro has no return value, it is desigted to help iterate over the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+<hr/>
+
 
 **size_t evcnt(void\* vec)**  <br/>
 Get the number of items in the vector.
+If the vector is NULL, or empty, return 0.
 
 <table>
 <tr><td> vec       </td><td> Pointer to the vector</td></tr>
@@ -391,6 +435,34 @@ Return a the pointer to the slot at a given index.
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
+**void\* evhead(void\* vec, size_t idx)**  <br/>
+Return a the pointer to the first slot in the vector.
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the value at the given index </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+
+**void\* evnext(void\* vec, size_t idx)**  <br/>
+Return a the pointer next value after the head (if `evhead()` was last called ), or next value after the last call to `evnext()`. 
+It is invalid to call `evnext()` without first calling `evhead()`. 
+When there are no more elements in the vector, `evnext()` returns NULL;
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the next value in the vector, or NULL if there are none. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+
+**void\* evtail(void\* vec, size_t idx)**  <br/>
+Return a the pointer to the last occupied slot in the vector.
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the last occupied slot in the vector </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
 
 ### Free
 EV allocates memory for the underlying array, as well as accounting.
