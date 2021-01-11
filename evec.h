@@ -171,6 +171,68 @@ void* evini(size_t slt_size, size_t count);
  */
 void* evpush(void* vec, void* obj, size_t obj_size);
 
+/**
+ * Macro to help iterate over each element of the vector, putting a pointer to
+ * the element in var.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         pointer to type of object that is (or will become) the vector,
+ *              eg. int* for a vector of ints.
+ * ivar:        name of the iterator variable to use
+ * return:      A pointer to the memory region, or NULL.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+#define eveach(vec,ivar) \
+    for(typeof(vec) ivar = evhead(vec); ivar; ivar = evnext(vec))
+
+
+/**
+ * Return a the pointer to the first slot in the vector.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to the first slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evhead(void* vec);
+
+/**
+ * Return a the pointer next value after the head (if evhead() was last called ),
+ * or next value after the last call to evnext(). It is invalid to call evnext()
+ * without first calling evhead(). When there are no more elements in the vector,
+ * evnext() returns NULL;
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to next slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evnext(void* vec);
+
+
+
+/**
+ * Return a the pointer to the last slot in the vector.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to the last slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evtail(void* vec);
+
 
 /**
  * Get the number of items in the vector.
@@ -181,18 +243,13 @@ void* evpush(void* vec, void* obj, size_t obj_size);
 size_t evcnt(void* vec);
 
 
-
 /**
- * Get the number of items in the vector.
- * vec:         Pointer to the vector
- * return:      The number of objects in the vector.
- * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
- */
-size_t evcnt(void* vec);
-
-
-/**
- * Return a the pointer to the slot at a given index.
+ * Return a the pointer to the slot at a given index
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
  * vec:         Pointer to the vector
  * idx:         The index value. Cannot be <0 or greater than the object count
  * return:      Pointer to the value.
@@ -582,6 +639,7 @@ void* evidx(void* vec, size_t idx)
     return (char*)vec + hdr->slt_size * idx;
 }
 
+
 void* evtail(void* vec)
 {
     return evidx(vec,evcnt(vec) -1);
@@ -634,9 +692,6 @@ void* evnext(void* vec)
     return evidx(vec,hdr->index);
 
 }
-
-#define eveach(var,vec) \
-    for(typeof(vec) var = evhead(vec); var; var = evnext(vec))
 
 void* evfree(void* vec)
 {

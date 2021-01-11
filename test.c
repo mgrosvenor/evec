@@ -355,7 +355,7 @@ static int test12()
     }
 
     int sum2 = 0;
-    eveach(ai, a){
+    eveach(a, ai){
         sum2 += *ai;
     }
 
