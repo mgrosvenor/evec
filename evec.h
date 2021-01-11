@@ -171,6 +171,68 @@ void* evini(size_t slt_size, size_t count);
  */
 void* evpush(void* vec, void* obj, size_t obj_size);
 
+/**
+ * Macro to help iterate over each element of the vector, putting a pointer to
+ * the element in var.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         pointer to type of object that is (or will become) the vector,
+ *              eg. int* for a vector of ints.
+ * ivar:        name of the iterator variable to use
+ * return:      A pointer to the memory region, or NULL.
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+#define eveach(vec,ivar) \
+    for(typeof(vec) ivar = evhead(vec); ivar; ivar = evnext(vec))
+
+
+/**
+ * Return a the pointer to the first slot in the vector.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to the first slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evhead(void* vec);
+
+/**
+ * Return a the pointer next value after the head (if evhead() was last called ),
+ * or next value after the last call to evnext(). It is invalid to call evnext()
+ * without first calling evhead(). When there are no more elements in the vector,
+ * evnext() returns NULL;
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to next slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evnext(void* vec);
+
+
+
+/**
+ * Return a the pointer to the last slot in the vector.
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
+ * vec:         Pointer to the vector
+ * return:      A pointer to the last slot in the vector, or NULL
+ * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
+ */
+void* evtail(void* vec);
+
 
 /**
  * Get the number of items in the vector.
@@ -181,18 +243,13 @@ void* evpush(void* vec, void* obj, size_t obj_size);
 size_t evcnt(void* vec);
 
 
-
 /**
- * Get the number of items in the vector.
- * vec:         Pointer to the vector
- * return:      The number of objects in the vector.
- * failure:     If EV_HARD_EXIT is enabled, this function may cause exit();
- */
-size_t evcnt(void* vec);
-
-
-/**
- * Return a the pointer to the slot at a given index.
+ * Return a the pointer to the slot at a given index
+ *
+ * **Note** this pointer is only valid until the next vector operation.
+ * A vector operation (such as `evpsh()`) may cause a memory reallocation which
+ * can make this pointer undefined.
+ *
  * vec:         Pointer to the vector
  * idx:         The index value. Cannot be <0 or greater than the object count
  * return:      Pointer to the value.
@@ -337,12 +394,14 @@ typedef struct {
     int64_t slt_size;
     int64_t obj_count;
     int64_t slt_count;
+    int64_t index;
     char magic2[8];
 } evhd_t;
 
 
 #define EV_DU_HDR(hdr) _evdumphdr(__LINE__, __FILE__, __FUNCTION__, hdr)
-void _evdumphdr(int ln, char* fn, const char* fu, evhd_t* hdr){
+void _evdumphdr(int ln, char* fn, const char* fu, evhd_t* hdr)
+{
     dprintf(STDERR_FILENO,"[HEADER :   %s:%i:%s()] ", basename(fn), ln, fu);
     dprintf(STDERR_FILENO,"magic1: %s, ", hdr->magic1);
     dprintf(STDERR_FILENO,"slt_size: %" PRId64 ", ", hdr->slt_size);
@@ -432,6 +491,11 @@ int _evhdrcheck(evhd_t* hdr)
 
     if(hdr->obj_count < 0){
         EV_FAIL("Object count cannot be less than zero!\n");
+        return -1;
+    }
+
+    if(hdr->index < 0){
+        EV_FAIL("Index value cannot be less than zero!\n");
         return -1;
     }
 
@@ -575,11 +639,59 @@ void* evidx(void* vec, size_t idx)
     return (char*)vec + hdr->slt_size * idx;
 }
 
+
 void* evtail(void* vec)
 {
     return evidx(vec,evcnt(vec) -1);
 }
 
+void* evhead(void* vec)
+{
+    ifp(!vec,
+    return NULL;
+    );
+
+    evhd_t *hdr =  EV_HDR(vec);
+    ifp(_evhdrcheck(hdr),
+        EV_FAIL("Header sanity check failed\n");
+        return NULL;
+    );
+
+    ifp(hdr->obj_count == 0,
+        return NULL;
+    );
+
+    hdr->index = 0;
+
+    return evidx(vec,hdr->index);
+}
+
+void* evnext(void* vec)
+{
+    ifp(!vec,
+        EV_FAIL("Cannot get next item in a NULL vector\n");
+                return NULL;
+    );
+
+    evhd_t *hdr =  EV_HDR(vec);
+    ifp(_evhdrcheck(hdr),
+        EV_FAIL("Header sanity check failed\n");
+                return NULL;
+    );
+
+    ifp(hdr->obj_count == 0,
+        EV_FAIL("Cannot get next item in an empty vector\n");
+                return NULL;
+    );
+
+    hdr->index++;
+    if(hdr->index >= hdr->obj_count){
+        return NULL;
+    }
+
+    return evidx(vec,hdr->index);
+
+}
 
 void* evfree(void* vec)
 {

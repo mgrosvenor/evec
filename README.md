@@ -50,11 +50,11 @@ For more details see [Core Functions](#core-functions) section.
 
 ### Step 3 - Access vector values
 
-Once you have some values in the vector, you may want to iterate over them, for example:  
+Once you have some values in the vector, you will eventually want to access them:  
 
 ~~~C
-for(int i = 0; i < evcnt(a); i++){
-    printf("%i, ", a[i]);
+eveach(a, ai){
+    printf("%i\n", *ai);
 }
 ~~~
 
@@ -79,8 +79,7 @@ Done. It's that easy!
 There are 3 core functions required to use EV.
 1. Add values into the vector using `evpsh()` functions.
    This will automatically allocate a new vector structure if none exists.
-2. Retrieve the number of items in the vector using `evcnt()`.
-   This is useful to iterate over the final vector.
+2. Iterate over the vector using `eveach()`.
 3. Free the structure when done using `evfree()`.
 
 For example:
@@ -97,14 +96,76 @@ int main(int argc, char** argv)
     evpsh(a, 4);
     evpsh(a, 6);
 
-    for(int i = 0; i < evcnt(a); i++){
-        printf("%i: %i\n", i, a[i]);
+    eveach(a,ai){
+        printf("%i\n", *ai);
     }  
 
     a = evfree(a);
     return 0;
 }
 ~~~
+## Extended Core Functions
+
+Beyond the basic usage, EV provides a few extra core functions for accessing the vector.
+
+Many operations on a vector care about only the first or the last element.
+For these operations, the `evhead()` and `evtail()` functions are provided.
+
+`evhead()` returns a pointer to the first element in the vector, but, it also resets the internal iterator state.
+After a call to `evhead()`, you can also call `evnext()` to get the next item.
+This can be used to manually implement the `eveach()` iteration loop above. Eg:
+
+~~~C
+#include <stdio.h>
+#include "evec.h"
+
+
+int main(int argc, char** argv)
+{
+int* a = NULL;
+evpsh(a, 2);
+evpsh(a, 4);
+evpsh(a, 6);
+
+    for(int* ai = evhead(a); ai != NULL; ai = evnext(a))
+        printf("%i\n", *ai);
+    }  
+
+    a = evfree(a);
+    return 0;
+}
+~~~
+
+To find out how many items are in the vector, use `evcnt()`. 
+
+If you are using a simple datatype like `int` or `char`, then you can simply access items in the vector using array/pointer notation, e.g `a[i]`. 
+Do keep in mind that this kind of access is only valid until the next EV operation which causes a memory reallocation, (eg `evpsh()` may do this).
+If you want to have consistent access to items, or for more complicated data types (e.g `struct`s) you can use `evidx()` to obtain a pointer to the object at the given index.  
+
+The following example has the same functionality as the previous example, but uses these extended functions.
+It has the neat property that you also have access to the iterator index value.  
+
+~~~C
+#include <stdio.h>
+#include "evec.h"
+
+
+int main(int argc, char** argv)
+{
+    int* a = NULL;
+    evpsh(a, 2);
+    evpsh(a, 4);
+    evpsh(a, 6);
+
+    for(int i = 0; i < evcnt(a); i++){
+        printf("%i: %i\n", i, *(int*)evidx(a, i));
+    }  
+
+    a = evfree(a);
+    return 0;
+}
+~~~
+
 
 
 ## Advanced Usage
@@ -286,7 +347,7 @@ You can do this with the following
 The following functions are included in all builds:
 - Initialisation functions - `evinit()`,`evinisz()`,`evini()`
 - Push functions - `evpsh()`,`evpush()`
-- Count and index functions - `evcnt()`, `evidx()`
+- Iteration and access functions - `eveach()`, `evcnt()`, `evidx()`, `evhead()`, `evnext()`, `evtail()` 
 - Memory free - `evfree()`
 
 Beyond those basic functions, other advanced functions require specific inclusion in the build by defining the following:
@@ -368,11 +429,29 @@ If the memory backing the vector is too small, memory will be reallocated to gro
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
-### Count and Index
-These two simple functions help to navigate around the vector once created.
+### Access and Iteration 
+These functions help to navigate around the vector once created.
+
+**eveach(var, vector){...}** <br/>
+Macro to help iterate over each element of the `vector`, putting a pointer to the element in `var`.
+This macro is equivalent to
+
+```C
+ for(typeof(vec) var = evhead(vec); var; var = evnext(vec))
+```
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector</td></tr>
+<tr><td> var       </td><td> Variable name for the iterator </td></tr>
+<tr><td> return    </td><td> This macro has no return value, it is desigted to help iterate over the vector. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+<hr/>
+
 
 **size_t evcnt(void\* vec)**  <br/>
 Get the number of items in the vector.
+If the vector is NULL, or empty, return 0.
 
 <table>
 <tr><td> vec       </td><td> Pointer to the vector</td></tr>
@@ -384,6 +463,10 @@ Get the number of items in the vector.
 **void\* evidx(void\* vec, size_t idx)**  <br/>
 Return a the pointer to the slot at a given index.
 
+**Note** this pointer is only valid until the next vector operation.
+A vector operation (such as a `push()`) may cause a memory reallocation which can make this pointer undefined.
+
+
 <table>
 <tr><td> vec       </td><td> Pointer to the vector.</td></tr>
 <tr><td> idx       </td><td> The index value. Cannot be <0 or greater than the object count. </td></tr>
@@ -391,6 +474,45 @@ Return a the pointer to the slot at a given index.
 <tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
 </table>
 
+**void\* evhead(void\* vec, size_t idx)**  <br/>
+Return a the pointer to the first slot in the vector.
+
+**Note** this pointer is only valid until the next vector operation.
+A vector operation (such as a `push()`) may cause a memory reallocation which can make this pointer undefined.
+
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the value at the given index </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+
+**void\* evnext(void\* vec, size_t idx)**  <br/>
+Return a the pointer next value after the head (if `evhead()` was last called ), or next value after the last call to `evnext()`. 
+It is invalid to call `evnext()` without first calling `evhead()`. 
+When there are no more elements in the vector, `evnext()` returns NULL;
+
+**Note** this pointer is only valid until the next vector operation.
+A vector operation (such as a `push()`) may cause a memory reallocation which can make this pointer undefined.
+
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the next value in the vector, or NULL if there are none. </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
+
+**void\* evtail(void\* vec, size_t idx)**  <br/>
+Return a the pointer to the last occupied slot in the vector.
+
+**Note** this pointer is only valid until the next vector operation. 
+A vector operation (such as a `push()`) may cause a memory reallocation which can make this pointer undefined. 
+
+<table>
+<tr><td> vec       </td><td> Pointer to the vector.</td></tr>
+<tr><td> return    </td><td> Pointer to the last occupied slot in the vector </td></tr>
+<tr><td> failure   </td><td> If EV_HARD_EXIT is enabled, this function may cause exit(); </td></tr>
+</table>
 
 ### Free
 EV allocates memory for the underlying array, as well as accounting.
@@ -519,11 +641,12 @@ Create a new vector and copy the contents of the source vector into it.
 
 
 ## Release notes
-**25 Nov 2020** - V1.0 <br/>
-- Initial release.
+**4 Jan 2021** - V1.2 <br/>
+* Allow evcnt() on null vector (returns 0)
+* More pedantic header checking.
+* Code formatting cleanup
 
 <hr/>
-<br/>
 
 **29 Nov 2020** - V1.1 <br/>
 - Improved quick start documentation with step by step guide.
@@ -533,14 +656,16 @@ Create a new vector and copy the contents of the source vector into it.
 - Made pedantic checking optional with `EV_PEDATNIC` define.
 - Made debug printing optional with `EV_DEBUG` define.
 
+<hr/>
+
+**25 Nove 2020** - V1.0 <br/>
+* Initial release of Easy Vector (EV)
 
 <hr/>
-<br/>
-
 
 ## Licensing
 
-Copyright (c) 2020, Matthew P. Grosvenor
+Copyright (c) 2020, 2021 Matthew P. Grosvenor
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
