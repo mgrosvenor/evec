@@ -83,6 +83,10 @@
 #define EV_DEBUG 0 //If this is set, debug printing is enabled
 #endif
 
+#define EV_MAJOR 1
+#define EV_MINOR 3
+#define EV_RELEASE 0 //If release is 1, this is an offical release version
+
 /*
  * Forward declarations of the the EV interface functions
  * ===========================================================================
