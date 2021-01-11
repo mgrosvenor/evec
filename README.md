@@ -641,16 +641,12 @@ Create a new vector and copy the contents of the source vector into it.
 
 
 ## Release notes
-**25 Nov 2020** - V1.0 <br/>
-- Initial release.
-
-<hr/>
-<br/>
-
 **4 Jan 2021** - V1.2 <br/>
 * Allow evcnt() on null vector (returns 0)
 * More pedantic header checking.
 * Code formatting cleanup
+
+<hr/>
 
 **29 Nov 2020** - V1.1 <br/>
 - Improved quick start documentation with step by step guide.
@@ -660,12 +656,12 @@ Create a new vector and copy the contents of the source vector into it.
 - Made pedantic checking optional with `EV_PEDATNIC` define.
 - Made debug printing optional with `EV_DEBUG` define.
 
+<hr/>
+
 **25 Nove 2020** - V1.0 <br/>
 * Initial release of Easy Vector (EV)
 
 <hr/>
-<br/>
-
 
 ## Licensing
 
