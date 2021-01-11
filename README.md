@@ -53,7 +53,7 @@ For more details see [Core Functions](#core-functions) section.
 Once you have some values in the vector, you will eventually want to access them:  
 
 ~~~C
-eveach(ai, a){
+eveach(a, ai){
     printf("%i\n", *ai);
 }
 ~~~
@@ -113,7 +113,7 @@ For these operations, the `evhead()` and `evtail()` functions are provided.
 
 `evhead()` returns a pointer to the first element in the vector, but, it also resets the internal iterator state.
 After a call to `evhead()`, you can also call `evnext()` to get the next item.
-This be used to manually implement the `eveach()` iteration loop above. Eg:
+This can be used to manually implement the `eveach()` iteration loop above. Eg:
 
 ~~~C
 #include <stdio.h>
@@ -138,7 +138,7 @@ evpsh(a, 6);
 
 To find out how many items are in the vector, use `evcnt()`. 
 
-If you are using a simple datatype like `int` or `char`, then you can simple access items in the vector using array/pointer notation, e.g `a[i]`. 
+If you are using a simple datatype like `int` or `char`, then you can simply access items in the vector using array/pointer notation, e.g `a[i]`. 
 Do keep in mind that this kind of access is only valid until the next EV operation which causes a memory reallocation, (eg `evpsh()` may do this).
 If you want to have consistent access to items, or for more complicated data types (e.g `struct`s) you can use `evidx()` to obtain a pointer to the object at the given index.  
 
@@ -669,7 +669,7 @@ Create a new vector and copy the contents of the source vector into it.
 
 ## Licensing
 
-Copyright (c) 2020, Matthew P. Grosvenor
+Copyright (c) 2020, 2021 Matthew P. Grosvenor
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
