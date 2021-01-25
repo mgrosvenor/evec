@@ -561,10 +561,10 @@ void* _evgrow(void* vec)
 void* evpush(void* vec, void* obj, size_t obj_size)
 {
     void* result = vec;
-    ifp(!vec,
-    //Get some memory
+    if(!vec){
+        //Get some memory
         result = evinisz(obj_size);
-    );
+    }
 
     evhd_t* hdr = EV_HDR(result);
     ifp(_evhdrcheck(hdr),
